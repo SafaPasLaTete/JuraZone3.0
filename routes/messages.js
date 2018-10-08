@@ -7,7 +7,7 @@ router.get('/', function(req, res, next) {
     if (err) {
       return next(err);
     }
-    res.send("lol");
+    res.send(messages);
   });
 });
 module.exports = router;
