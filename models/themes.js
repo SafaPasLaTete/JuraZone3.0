@@ -33,4 +33,4 @@ function validateThemeNameUniqueness(value, callback) {
     });
 }
 // Create the model from the schema and export it
-module.exports = mongoose.model('themes', themeSchema)
+module.exports = mongoose.model('Theme', themeSchema)
