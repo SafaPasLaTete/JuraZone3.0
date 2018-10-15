@@ -6,12 +6,13 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var themeRouter = require('./routes/themes');
 
 var app = express();
 
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/my-database-name');
+mongoose.connect('mongodb://localhost/JuraZone');
 
 
 // view engine setup
@@ -25,7 +26,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/users', usersRouter)
+app.use('/themes', themeRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
