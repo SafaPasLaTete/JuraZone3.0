@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 // Define the schema for users
 const usersSchema = new Schema({
-  name: {
+  pseudo: {
     type: String,
     required: true,
     minlength: 3,
@@ -10,21 +10,24 @@ const usersSchema = new Schema({
     unique: true,
     validate: {
       
-      validator: validatePseudoNameUniqueness,
+      validator: validatePseudoUniqueness,
       message: 'User {VALUE} already exists'
     }
   },
-  gender: {
+  password: {
     type: String,
     required: true,
-    enum: [ 'male', 'female' ]
   },
-  birthDate: {
-    type: Date
+  photo: {
+    type: String
   },
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  modificationAt: {
+  type: Date,
+  default: Date.now
   }
 });
 // Customize the behavior of person.toJSON() (called when using res.send)
@@ -37,7 +40,7 @@ usersSchema.set('toJSON', {
  * Given a name, calls the callback function with true if no person exists with that name
  * (or the only person that exists is the same as the person being validated).
  */
-function validatePseudoNameUniqueness(value, callback) {
+function validatePseudoUniqueness(value, callback) {
   const user = this;
   this.constructor.findOne().where('name').equals(value).exec(function(err, existingUser) {
     callback(!err && (!existingUser || existingUser._id.equals(user._id)));
