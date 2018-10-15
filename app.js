@@ -11,7 +11,7 @@ var app = express();
 
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
-mongoose.connect('mongodb://localhost/my-database-name');
+mongoose.connect('mongodb://localhost/JuraZone');
 
 
 // view engine setup
