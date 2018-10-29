@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 // Define the schema for users
 const themeSchema = new Schema({
-    nom :{
+    name :{
 
         type: String,
         required : true,
@@ -10,7 +10,8 @@ const themeSchema = new Schema({
         validate : {
 
             validator: validateThemeNameUniqueness,
-            message: 'Person {VALUE} already exists'
+            message: 'theme {VALUE} already exists',
+            isAsync: true,
 
         }
 
@@ -28,8 +29,8 @@ const themeSchema = new Schema({
 
 function validateThemeNameUniqueness(value, callback) {
     const theme = this;
-    this.constructor.findOne().where('nom').equals(value).exec(function(err, existingThemes) {
-        callback(!err && (!existingThemes || existingThemes._id.equals(Themes._id)));
+    this.constructor.findOne().where('name').equals(value).exec(function(err, existingThemes) {
+        callback(!err && (!existingThemes || existingThemes._id.equals(theme._id)));
     });
 }
 // Create the model from the schema and export it
