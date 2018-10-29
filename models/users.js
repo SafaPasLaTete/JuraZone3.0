@@ -9,7 +9,7 @@ const usersSchema = new Schema({
     maxlength: 30,
     unique: true,
     validate: {
-      
+      isAsync:true,
       validator: validatePseudoUniqueness,
       message: 'User {VALUE} already exists'
     }
