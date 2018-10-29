@@ -41,5 +41,13 @@ router.get('/', function (req, res, next) {
     });
 });
 
+router.delete('/:id', function (req, res, next) {
+        Message.findByIdAndRemove(req.params.id).exec(function (err, message) {
+            if (err) {
+                return next(err)
+            }
+            res.status(200).send({message: "le message " + req.params.id + " a été supprimé"})
+        })
+    });
 
 module.exports = router;
