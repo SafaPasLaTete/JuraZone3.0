@@ -21,23 +21,23 @@ const messageSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User',
     default: null,
-        validate: {
+       /* validate: {
           isAsync: true,
           // Validate that the director is a valid ObjectId
           // and references an existing person
           validator: validateAuthor
-        }
+        }*/
   },
     theme: {
     type: Schema.Types.ObjectId,
     ref: 'Theme',
     default: null,
-    validate: {
+   /* validate: {
           isAsync: true,
       // Validate that the director is a valid ObjectId
       // and references an existing person
       validator: validateTheme
-        }
+        }*/
     }
 });
     
@@ -56,7 +56,7 @@ messageSchema.set('toJSON', {
  * (That way, the client gets an error on "authorHref", which is the
  * property they sent, rather than "director", which they don't know.)
  */
-function validateAuthor(value, callback) {
+/*function validateAuthor(value, callback) {
   if (!ObjectId.isValid(value)) {
     this.invalidate('author', 'Path `author` is not a valid Person reference', value, 'resourceNotFound');
     return callback();
@@ -72,18 +72,18 @@ function validateAuthor(value, callback) {
 }
 function validateTheme(value, callback) {
   if (!ObjectId.isValid(value)) {
-    this.invalidate('theme', 'Path `theme` is not a valid Person reference', value, 'resourceNotFound');
+    this.invalidate('theme', 'Path `theme` is not a valid Theme reference', value, 'resourceNotFound');
     return callback();
   }
 
   mongoose.model('Theme').findOne({ _id: ObjectId(value) }).exec(function(err, person) {
-    if (err || !user) {
-      this.invalidate('theme', 'Path `theme` does not reference a Person that exists', value, 'resourceNotFound');
+    if (err || !person) {
+      this.invalidate('theme', 'Path `theme` does not reference a Theme that exists', value, 'resourceNotFound');
     }
 
     callback();
   });
-}
+}*/
 /**
  * Removes extra MongoDB properties from serialized movies,
  * and includes the director's data if it has been populated.

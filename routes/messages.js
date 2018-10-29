@@ -1,13 +1,45 @@
 var express = require('express');
 var router = express.Router();
 const Message = require('../models/messages');
-/* GET messages listing. */
-router.get('/', function(req, res, next) {
-  Message.find().populate("author").sort('id').exec(function(err, messages) {
-    if (err) {
-      return next(err);
-    }
-    res.send(messages);
-  });
+
+router.post('/', function (req, res, next) {
+
+    /* Accéder aux paramêtres dans le corps de la requète*/
+
+    const temp = req.body
+
+    
+
+    /* Création d'un documents utilisateur */
+
+    const message = new Message({
+        contenu: temp.contenu, 
+        position: "coucou"
+
+    });
+
+    /* Enregistrement du documents utilisateurs dans la base de données. */
+
+    message.save(function (err) {
+        if (err) {
+            console.error(err)
+            res.status(500).send('Erreur lors de la création du nouveau message');
+            return;
+        } 
+        
+        
+    });
 });
+
+/* GET messages listing. */
+router.get('/', function (req, res, next) {
+    Message.find().populate("author").sort('id').exec(function (err, messages) {
+        if (err) {
+            return next(err);
+        }
+        res.send(messages);
+    });
+});
+
+
 module.exports = router;
