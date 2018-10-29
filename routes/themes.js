@@ -23,6 +23,7 @@ router.post('/', function(req, res, next) {
     const theme = new Theme({
         name:temp.name,
         photo:'',
+        createdAt:new Date(),
     });
 
     /* Enregistrement du documents utilisateurs dans la base de données. */
@@ -37,8 +38,16 @@ router.post('/', function(req, res, next) {
     });
 });
 
+router.delete('/:id', function (req, res, next) {
 
 
+        Theme.findByIdAndRemove(req.params.id).exec(function (err, theme) {
+            if (err) {
+                return next(err)
+            }
+            res.status(200).send({message: "le theme " + req.params.id + req.params.name + " a été supprimer"})
+        })
+    });
 
 module.exports = router;
 
