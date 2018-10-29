@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const Message = require('../models/messages');
 const User = require('../models/users');
+const Theme = require('../models/themes');
 
 router.post('/', function (req, res, next) {
 
@@ -15,7 +16,8 @@ router.post('/', function (req, res, next) {
     const message = new Message({
         contenu: temp.contenu, 
         position: "coucou",
-        author: temp.auteur
+        author: temp.auteur,
+        theme: temp.themes
 
     }); 
 
@@ -40,6 +42,15 @@ router.get('/', function (req, res, next) {
         }
         res.send(messages);
     });
+});
+router.get('/:name', function (req, res, next) {
+   
+    Message.find({theme: req.params.name}).populate("author").sort('id').exec(function (err, messages) {
+        if (err) {
+            return next(err);
+        }
+        res.send(messages);
+    })
 });
 
 router.delete('/:id', function (req, res, next) {
