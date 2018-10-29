@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const Message = require('../models/messages');
+const User = require('../models/users');
 
 router.post('/', function (req, res, next) {
 
@@ -8,15 +9,15 @@ router.post('/', function (req, res, next) {
 
     const temp = req.body
 
-    
 
     /* Création d'un documents utilisateur */
 
     const message = new Message({
         contenu: temp.contenu, 
-        position: "coucou"
+        position: "coucou",
+        author: temp.auteur
 
-    });
+    }); 
 
     /* Enregistrement du documents utilisateurs dans la base de données. */
 

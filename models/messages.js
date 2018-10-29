@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
+const User = require('./users')
 // Define the schema for users
 const messageSchema = new Schema({
   contenu: {
@@ -94,16 +95,9 @@ function transformJsonAuthor(doc, json, options) {
   delete json._id;
   delete json.__v;
 
-  if (json.author instanceof ObjectId) {
-    // Remove the director property by default (there's a "atuhorHref" virtual property)
-    delete json.author;
-  } else if (json.author) {
-    // If the director was populated, include it in the serialization
-    json.author = doc.author.toJSON();
-  }
-
   return json;
 }
+
     
 // Create the model from the schema and export it
 module.exports = mongoose.model('Message', messageSchema);
