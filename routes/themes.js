@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const bcrypt = require('bcrypt');
 const Theme = require('../models/themes');
 const Message = require('../models/messages');
 const secretKey = process.env.SECRET_KEY || 'changeme';
@@ -11,6 +12,8 @@ router.get('/', function(req, res, next) {
         }
         res.send(themes);
     });
+
+    
 });
 
 
