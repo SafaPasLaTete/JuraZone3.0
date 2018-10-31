@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const secretKey = process.env.SECRET_KEY || 'changeme';
+
 /* GET users listing. */
 
 function findUserMiddleware(req, res, next) {
@@ -25,7 +26,7 @@ function findUserMiddleware(req, res, next) {
     })
 }
 
-router.get('/', function(req, res, next) {
+router.get('/', authenticate, function(req, res, next) {
   User.find().sort('id').exec(function(err, users) {
     if (err) {
       return next(err);
@@ -74,7 +75,7 @@ router.post('/', function(req, res, next) {
 
 /* Mettre à jour l'utilisateur */
 
-router.patch('/:id', function(req, res, next) {
+router.patch('/:id', authenticate, function(req, res, next) {
     
     console.log(req.params.id);
     
@@ -82,6 +83,10 @@ router.patch('/:id', function(req, res, next) {
         if(err) {
             return console.error('Cet utilisateur n\'existe pas');
             res.status(422).send('ID incorrect');
+        }
+        
+        if (req.currentUserId !== thing.user.toString()) {
+            return res.status(403).send('Ce n\' est pas votre profil')
         }
         
         if(!req.body) {
@@ -139,6 +144,31 @@ router.post('/login', function(req, res, next) {
     });
   })
 });
+
+/*Fonction authentique */
+
+function authenticate(req, res, next) {
+  // Ensure the header is present.
+  const authorization = req.get('Authorization');
+  if (!authorization) {
+    return res.status(401).send('Authorization header is missing');
+  }
+  // Check that the header has the correct format.
+  const match = authorization.match(/^Bearer (.+)$/);
+  if (!match) {
+    return res.status(401).send('Authorization header is not a bearer token');
+  }
+  // Extract and verify the JWT.
+  const token = match[1];
+  jwt.verify(token, secretKey, function(err, payload) {
+    if (err) {
+      return res.status(401).send('Your token is invalid or has expired');
+    } else {
+      req.currentUserId = payload.sub;
+      next(); // Pass the ID of the authenticated user to the next middleware.
+    }
+  });
+}
 
 
 
