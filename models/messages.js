@@ -27,7 +27,7 @@ const messageSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: 'User',
-    default: null
+    default: null,
         validate: {
           isAsync: true,
           // Validate that the director is a valid ObjectId
@@ -38,7 +38,7 @@ const messageSchema = new Schema({
     theme: {
     type: Schema.Types.ObjectId,
     ref: 'Theme',
-    default: null
+    default: null,
     validate: {
           isAsync: true,
       // Validate that the director is a valid ObjectId
