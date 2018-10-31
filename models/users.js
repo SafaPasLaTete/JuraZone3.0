@@ -1,7 +1,11 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
+
+
 // Define the schema for users
-const usersSchema = new Schema({
+let userSchema = new mongoose.Schema({
   pseudo: {
     type: String,
     required: true,
@@ -31,7 +35,7 @@ const usersSchema = new Schema({
   }
 });
 // Customize the behavior of person.toJSON() (called when using res.send)
-usersSchema.set('toJSON', {
+userSchema.set('toJSON', {
   transform: transformJsonUser, 
   virtuals: true 
 });
@@ -58,6 +62,45 @@ function transformJsonUser(doc, json, options) {
 
   return json;
 }
+
+userSchema.statics.verifyCredentials = function (pseudo, password, callback) {
+    User.findOne({pseudo: pseudo}).exec(function (err, user) {
+        if (err) {
+
+            return callback(err)
+        }
+        if (user === null) {
+            const err = new Error()
+            err.status = 404
+            err.message = 'User Not Found'
+            return callback(err)
+        }
+
+        bcrypt.compare(password, user.password, function (err, valid) {
+            // Handle error and password validity...
+            if (err) {
+                return callback(err);
+            } else if (!valid) {
+                const err = new Error('invalid password')
+                err.status = 401
+                err.message = 'invalid password'
+                return callback(err)
+            }
+
+            callback(undefined, user)
+        })
+    })
+}
+
+userSchema.methods.generateJwt = function (callback) {
+
+    jwt.sign({
+            sub: this._id,
+            exp: (new Date().getTime() + 7 * 24 * 3600 * 1000) / 1000,
+            iat: Date.now(),
+        })
+}
 // Create the model from the schema and export it
-module.exports = mongoose.model('User', usersSchema);
+let User = mongoose.model('users', userSchema);
+module.exports = User;
 
