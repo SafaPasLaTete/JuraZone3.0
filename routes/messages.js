@@ -42,7 +42,7 @@ router.post('/', authenticate, function (req, res, next) {
         contenu: temp.contenu,
         posLongitude: temp.longitude,
         posLatitude: temp.latitude,
-        author: temp.auteur,
+        author: req.currentUserId,
         theme: temp.thema
 
     });
