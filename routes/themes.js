@@ -6,11 +6,33 @@ const Message = require('../models/messages');
 const secretKey = process.env.SECRET_KEY || 'changeme';
 /* GET messages listing. */
 router.get('/', function(req, res, next) {
-    Theme.find().sort('id').exec(function(err, themes) {
-        if (err) {
-            return next(err);
+
+    Theme.find().count(function(err, total) {
+        if (err) { return next(err); };
+        let query = Theme.find();
+
+        let page = parseInt(req.query.page, 10);
+        if (isNaN(page) || page < 1) {
+            page = 1;
         }
-        res.send(themes);
+        // Parse the "pageSize" param (default to 100 if invalid)
+        let pageSize = parseInt(req.query.pageSize, 10);
+        if (isNaN(pageSize) || pageSize < 0 || pageSize > 100) {
+            pageSize = 100;
+        }
+        // Apply skip and limit to select the correct page of elements
+        query = query.skip((page - 1) * pageSize).limit(pageSize);
+
+        query.exec(function(err, themes) {
+            if (err) { return next(err); }
+            // Send JSON envelope with data
+            res.send({
+                page: page,
+                pageSize: pageSize,
+                total: total,
+                data: themes
+            });
+        });
     });
 
     
