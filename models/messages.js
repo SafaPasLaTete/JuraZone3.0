@@ -26,12 +26,12 @@ const messageSchema = new Schema({
      posLatitude: {
         type: Number,
         default: 0.000000,
-        required: 'The latitude is required'
+      required: 'The latitude is required'
     },
     posLongitude: {
         type: Number,
         default: 0.000000,
-        required: 'The longitude is required'
+       required: 'The longitude is required'
     },
   createdAt: {
     type: Date,

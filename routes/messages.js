@@ -29,6 +29,7 @@ function authenticate(req, res, next) {
     });
 }
 
+
 /**
  * @api {post} /messages Create a new message
  * @apiName CreateMessage
@@ -43,6 +44,9 @@ function authenticate(req, res, next) {
  */
 
 router.post('/', authenticate, function (req, res, next) {
+=======
+router.post('/', function (req, res, next) {
+>>>>>>> Stashed changes
 
 
     const temp = req.body
