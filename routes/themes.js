@@ -238,7 +238,7 @@ router.delete('/:id',authenticate, function (req, res, next) {
 
 
 /**
- * @api {get} /theme/:id/nbrmessages Get all the messages of the theme
+ * @api {get} /theme/:id/nbrmessages Get all the number of messages of the theme
  * @apiName GetAllMessageOfTheTheme
  * @apiGroup Theme
  *

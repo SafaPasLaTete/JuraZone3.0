@@ -44,9 +44,7 @@ function authenticate(req, res, next) {
  */
 
 router.post('/', authenticate, function (req, res, next) {
-=======
-router.post('/', function (req, res, next) {
->>>>>>> Stashed changes
+
 
 
     const temp = req.body
