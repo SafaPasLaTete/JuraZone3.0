@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
 const Schema = mongoose.Schema;
 const User = require('./users')
-// Define the schema for users
+// Define the schema for messages
 const messageSchema = new Schema({
   contenu: {
     type: String,
@@ -10,7 +10,20 @@ const messageSchema = new Schema({
     minlength: 3,
     maxlength: 250,
   },
-  posLatitude: {
+/*location: {
+        type: {
+            type: String, 
+            enum: ['Point'], 
+            required: true,
+            default: 'Point'
+        },
+        coordinates: {
+            type: [Number],
+            required: true,
+            default:  [-122.5, 37.7]
+        } 
+    }, BEST PRACTICE but we're not able to make it work'*/
+     posLatitude: {
         type: Number,
         default: 0.000000,
         required: 'The latitude is required'
@@ -49,19 +62,9 @@ const messageSchema = new Schema({
 });
     
 
-// Customize the behavior of movie.toJSON() (called when using res.send)
-messageSchema.set('toJSON', {
-  transform: transformJsonAuthor, // Modify the serialized JSON with a custom function
-  virtuals: true // Include virtual properties when serializing documents to JSON
-});
-
 /**
  * Given a person ID, ensures that it references an existing person.
  *
- * If it's not the case or the ID is missing or not a valid object ID,
- * the "authorHref" property is invalidated instead of "director".
- * (That way, the client gets an error on "authorHref", which is the
- * property they sent, rather than "director", which they don't know.)
  */
 function validateAuthor(value, callback) {
   if (!ObjectId.isValid(value)) {
@@ -77,6 +80,11 @@ function validateAuthor(value, callback) {
     callback();
   });
 }
+/**
+*
+*same for the theme
+*
+*/
 function validateTheme(value, callback) {
   if (!ObjectId.isValid(value)) {
     this.invalidate('theme', 'Path `theme` is not a valid Theme reference', value, 'resourceNotFound');
@@ -90,18 +98,6 @@ function validateTheme(value, callback) {
 
     callback();
   });
-}
-/**
- * Removes extra MongoDB properties from serialized movies,
- * and includes the director's data if it has been populated.
- */
-function transformJsonAuthor(doc, json, options) {
-
-  // Remove MongoDB _id & __v (there's a default virtual "id" property)
-  delete json._id;
-  delete json.__v;
-
-  return json;
 }
 
     
