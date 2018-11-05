@@ -15,7 +15,10 @@ var app = express();
 
 const mongoose = require('mongoose');
 mongoose.Promise = Promise;
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/JuraZone');
+mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost/JuraZone', function(err){
+      if(mongoose.connection.readyState === 0)
+        -    createError(500,err);
+    });
 
 
 // view engine setup
