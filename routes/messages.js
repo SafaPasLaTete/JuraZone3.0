@@ -7,17 +7,17 @@ const secretKey = process.env.SECRET_KEY || 'changeme';
 
 //FONCTION AUTHENTIFICATION
 function authenticate(req, res, next) {
-    // Ensure the header is present.
+    // vérif que le header est présent
     const authorization = req.get('Authorization');
     if (!authorization) {
         return res.status(401).send('Authorization header is missing');
     }
-    // Check that the header has the correct format.
+    // vérifie qu'il est de la bonne forme
     const match = authorization.match(/^Bearer (.+)$/);
     if (!match) {
         return res.status(401).send('Authorization header is not a bearer token');
     }
-    // Extract and verify the JWT.
+    // extraire et vérifie le token
     const token = match[1];
     jwt.verify(token, secretKey, function (err, payload) {
         if (err) {
@@ -29,14 +29,25 @@ function authenticate(req, res, next) {
     });
 }
 
+/**
+ * @api {post} /messages Create a new message
+ * @apiName CreateMessage
+ * @apiGroup Messages
+ * @apiDescription function to create a new message
+ * @apiVersion 1.0.0
+ *
+ *
+ * @apiUse MessageParams
+ *
+ * @apiSuccess {Object} Message the message that will be saved
+ */
+
 router.post('/', authenticate, function (req, res, next) {
 
-    /* Accéder aux paramêtres dans le corps de la requète*/
 
     const temp = req.body
 
 
-    /* Création d'un documents utilisateur */
 
     const message = new Message({
         contenu: temp.contenu,
@@ -47,7 +58,6 @@ router.post('/', authenticate, function (req, res, next) {
 
     });
 
-    /* Enregistrement du documents utilisateurs dans la base de données. */
 
     message.save(function (err) {
         if (err) {
@@ -60,7 +70,19 @@ router.post('/', authenticate, function (req, res, next) {
     });
 });
 
-/* GET messages listing. */
+/**
+ * @api {get} /messages Get all the messages
+ * @apiName GetMessages
+ * @apiGroup Messages
+ * @apiDescription function to get all the messages (independant from theme)
+ * @apiVersion 1.0.0
+ *
+ *
+ * @apiUse MessageParams
+ *
+ * @apiSuccess {Object} Message the message that will be updated
+ */
+
 router.get('/', authenticate, function (req, res, next) {
     Message.find().populate("author").sort('id').exec(function (err, messages) {
         if (err) {
@@ -70,12 +92,24 @@ router.get('/', authenticate, function (req, res, next) {
     });
 });
 
+/**
+ * @api {delete} /messages Delete a new message
+ * @apiName DeleteMessage
+ * @apiGroup Messages
+ * @apiDescription function to delete a new message
+ * @apiVersion 1.0.0
+ *
+ *
+ * @apiUse MessageParams
+ *
+ * @apiSuccess {String} Sucess le message a été supprimé
+ */
 
 router.delete('/:id', authenticate, function (req, res, next) {
     Message.findByIdAndRemove(req.params.id).exec(function (err, message) {
         if (err) {
             if (req.currentUserId !== message.user.id.toString()) {
-                return res.status(403).send('Please mind your own things.')
+                return res.status(403).send('Please mind your own things. User not autorized.')
             }
             return next(err)
         }
@@ -84,5 +118,22 @@ router.delete('/:id', authenticate, function (req, res, next) {
         })
     })
 });
+
+
+
+/**
+ * @apiDefine MessageParams
+ *
+ * @apiParam (Body response) {Number} id Unique identifier of the message
+ * @apiParam (Body request) {String} contenu Content of the message
+ * @apiParam (Body request) {Number} posLatitude latitude of where the message was posted
+ * @apiParam (Body request) {Number} posLongitude longitude of where the message was posted
+ * @apiParam (Body response) {Date} createdAt date of the creation (automatic)
+ * @apiParam (Body request) {ObjectId} author author of the message (auto from the auth)
+ * @apiParam (Body request) {ObjectId} theme theme of the message
+ *
+ */
+
+
 
 module.exports = router;
