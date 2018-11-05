@@ -38,6 +38,7 @@ function authenticate(req, res, next) {
  *
  *
  * @apiUse MessageParams
+ * @apiUse MessageNotFoundError
  *
  * @apiSuccess {Object} Message the message that will be saved
  */
@@ -79,6 +80,7 @@ router.post('/', authenticate, function (req, res, next) {
  *
  *
  * @apiUse MessageParams
+ * @apiUse MessageNotFoundError
  *
  * @apiSuccess {Object} Message the message that will be updated
  */
@@ -101,6 +103,7 @@ router.get('/', authenticate, function (req, res, next) {
  *
  *
  * @apiUse MessageParams
+  * @apiUse MessageNotFoundError
  *
  * @apiSuccess {String} Sucess le message a été supprimé
  */
@@ -132,6 +135,34 @@ router.delete('/:id', authenticate, function (req, res, next) {
  * @apiParam (Body request) {ObjectId} author author of the message (auto from the auth)
  * @apiParam (Body request) {ObjectId} theme theme of the message
  *
+ */
+/**
+ * @apiDefine MessageValidationError
+ *
+ * @apiError (Error 4xx) {Object} 401/Unauthorized User is not authorized to create this place.
+ * @apiError (Error 5xx) {Object} 500/InternalServerError Some of the place's properties are invalid
+ *
+ * @apiErrorExample {json} 401 Unauthorized
+ *     HTTP/1.1 401 Unauthorized
+ *     Content-Type: application/json
+ *
+ *     Authorization header is missing
+ *
+ * @apiErrorExample {json} 500 Internal Server Error
+ *     HTTP/1.1 500 Internal Server Error
+ *     Content-Type: application/json
+ *
+ */
+/**
+ * @apiDefine MessageNotFoundError
+ *
+ * @apiError {Object} 404/NotFound No place was found corresponding to the placeid in the URL path
+ *
+ * @apiErrorExample {json} 404 Not Found
+ *     HTTP/1.1 404 Not Found
+ *     Content-Type: text/plain
+ *
+ *     No place found with ID 1
  */
 
 
